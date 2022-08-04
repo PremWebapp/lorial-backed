@@ -4,29 +4,15 @@ import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from "body-parser"
 import './utils/db_connection.js'
-import vendorRoutre from "./vendor/route/auth.js";
+import vendorRoute from "./vendor/route/vendorGlobalRoute.js";
 
 const app = express();
 
 app.use(cors())
-app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-
-app.use((req, res, next) => {
-    const error = new Error('Not Found')
-    error.status = 400
-    next() // 404 errors 
-})
-
-app.use((error, req, res, next) => {
-    res.status(error.status || 500)
-    res.json({
-        error: {
-            message: error.message
-        }
-    })
-})
+app.use('/uploads',express.static('uploads'))
+app.use(morgan('dev'))
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -41,7 +27,29 @@ app.use((req, res, next) => {
     next();
 });
 
-//  routes for vendor
-app.use('/vendor', vendorRoutre)
+//  route for vendor
+app.use('/vendor', vendorRoute)
+
+
+app.use("*", (req, res, next) => {
+    const error = {
+      status: 404,
+      message: API_ENDPOINT_NOT_FOUND_ERR,
+    };
+    next(error);
+  });
+  
+  // global error handling middleware
+  app.use((err, req, res, next) => {
+    console.log(err);
+    const status = err.status || 500;
+    const message = err.message
+    const data = err.data || null;
+    res.status(status).json({
+      type: "error",
+      message,
+      data,
+    });
+  });
 
 export default app
