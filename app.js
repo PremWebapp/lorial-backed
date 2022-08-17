@@ -28,13 +28,13 @@ app.use((req, res, next) => {
 });
 
 //  route for vendor
-app.use('/vendor', vendorRoute)
+app.use('/', vendorRoute)
 
 
 app.use("*", (req, res, next) => {
     const error = {
       status: 404,
-      message: API_ENDPOINT_NOT_FOUND_ERR,
+      message: API_ENDPOINT_NOT_FOUND,
     };
     next(error);
   });
@@ -49,6 +49,7 @@ app.use("*", (req, res, next) => {
       type: "error",
       message,
       data,
+      status
     });
   });
 
