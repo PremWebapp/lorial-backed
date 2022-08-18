@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { add_product } from '../controller/addproductController.js';
+import { add_product, get_product, remove_product } from '../controller/productController.js';
 import { checkAuth } from '../middleware/check-auth.js';
 
 const productRoute = express.Router()
@@ -8,7 +8,7 @@ const productRoute = express.Router()
 //for category iamge upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'vendor/vendorProduct/')
+        cb(null, 'vendor/public/vendorProduct/')
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + req.body?.vendor_id + '-' + req.body?.category_id + '-' + file.originalname)
@@ -18,5 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 productRoute.post('/', checkAuth, upload.array('images'), add_product)
+productRoute.get('/', checkAuth, get_product)
+productRoute.delete('/', checkAuth, remove_product)
 
 export default productRoute

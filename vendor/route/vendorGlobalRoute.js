@@ -8,6 +8,6 @@ const vendorRoute = express();
 
 vendorRoute.use('/auth', authRoute)
 vendorRoute.use('/category', categoryRoute)
-vendorRoute.use('/add-product', checkAuth,productRoute )
+vendorRoute.use('/product', checkAuth, productRoute)
 
 export default vendorRoute

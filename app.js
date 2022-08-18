@@ -9,10 +9,14 @@ import vendorRoute from "./vendor/route/vendorGlobalRoute.js";
 const app = express();
 
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use('/uploads',express.static('uploads'))
 app.use(morgan('dev'))
+app.use(express.static('public'));
+app.use(express.static('vendorCategoryImage'));
+app.use(express.static('vendorProduct'));
+// app.use('/images', express.static('public'));// you can access image using this url: http://localhost:7000/images/abc.jpg
+
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");

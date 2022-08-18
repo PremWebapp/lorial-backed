@@ -8,8 +8,7 @@ const categoryRoute = express.Router()
 //for category iamge upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log('req.body.vendor_id>>================================', req.body)
-        cb(null, 'vendor/vendorCategoryImage/')
+        cb(null, './vendor/public/vendorCategoryImage/')
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
