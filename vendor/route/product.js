@@ -1,24 +1,19 @@
-import express from 'express';
 import multer from 'multer';
-import { add_product, get_product, remove_product } from '../controller/productController.js';
+import { add_product, get_product, remove_product ,get_byid_product} from '../controller/productController.js';
 import { checkAuth } from '../middleware/check-auth.js';
+import express from 'express';
+import multerS3 from 'multer-s3'
+import { MulterThree } from '../middleware/aws-upload.js';
 
 const productRoute = express.Router()
 
-//for category iamge upload
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'vendor/public/vendorProduct/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + req.body?.vendor_id + '-' + req.body?.category_id + '-' + file.originalname)
-    }
+var upload = multer({
+    storage: multerS3(MulterThree)
 })
-
-const upload = multer({ storage: storage })
 
 productRoute.post('/', checkAuth, upload.array('images'), add_product)
 productRoute.get('/', checkAuth, get_product)
+productRoute.get('/details', checkAuth, get_byid_product)
 productRoute.delete('/', checkAuth, remove_product)
 
 export default productRoute

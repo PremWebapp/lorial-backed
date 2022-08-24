@@ -1,8 +1,8 @@
 import express from "express";
-import { checkAuth } from "../middleware/check-auth.js";
-import authRoute from "./auth.js";
-import categoryRoute from "./category.js";
-import productRoute from "./product.js";
+import { checkAuth } from "./check-auth.js";
+import authRoute from "../route/auth.js";
+import categoryRoute from "../route/category.js";
+import productRoute from "../route/product.js";
 
 const vendorRoute = express();
 
