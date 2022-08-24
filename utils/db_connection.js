@@ -4,7 +4,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: 'lorial'
+  database: 'lorial-vendor'
 });
 
 connection.connect(function(err) {

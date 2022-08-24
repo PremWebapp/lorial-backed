@@ -39,7 +39,7 @@ export const get_product = async (req, res, next) => {
     try {
         const { vendor_id } = req.query
         const query = util.promisify(connection.query).bind(connection);
-        const ifExist = await query(`SELECT * FROM vendor_product vp LEFT JOIN vendor_category vc ON (vp.category_id = vc.id AND vp.vendor_id='${vendor_id}'); `)
+        const ifExist = await query(`SELECT * FROM vendor_product vp  JOIN vendor_category vc ON (vp.vendor_id='${vendor_id}' AND vc.vendor_id='${vendor_id}' AND vp.category_id = vc.id )`)
         var resultCategory = Object.values(JSON.parse(JSON.stringify(ifExist)))
 
         return res.status(200).send({ status: 200, message: "Data fetched successfully", data: resultCategory });

@@ -42,13 +42,13 @@ app.use('/', vendorRoute)
 
 
 // api end point handeling
-// app.use("*", (req, res, next) => {
-//   const error = {
-//     status: 404,
-//     message: API_ENDPOINT_NOT_FOUND,
-//   };
-//   next(error);
-// });
+app.use("*", (req, res, next) => {
+  const error = {
+    status: 404,
+    message: API_ENDPOINT_NOT_FOUND,
+  };
+  next(error);
+});
 
 // global error handling middleware
 app.use((err, req, res, next) => {

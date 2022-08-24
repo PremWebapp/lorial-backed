@@ -15,11 +15,15 @@ export const login_by_vendor = async (req, res, next) => {
 
     const ifExist = await query(`SELECT * FROM vendorotp WHERE otp=${otp}`);
     var resultUser = Object.values(JSON.parse(JSON.stringify(ifExist)));
+    if (resultUser.length == 0) return res.status(400).send({ error: "User not found, please register!", status: 400 });
 
-    if (resultUser.length == 0) return res.status(400).send({ message: "User not found, please register!", status: 400 });
+    const ifVendorExist = await query(`SELECT * FROM registervendor WHERE mobile=${resultUser[0]?.mobile}`);
+
+    var resultvendor = Object.values(JSON.parse(JSON.stringify(ifVendorExist)))
+    if (resultUser[0]?.mobile !== resultvendor[0]?.mobile) return res.status(400).send({ error: "Invalid User!", status: 400 });
 
     // compare OTP with existing OTP 
-    if (resultUser[0]?.otp !== otp) return res.status(400).send({ message: "In Valid OTP, please send a valid OTP!", status: 400 })
+    if (resultUser[0]?.otp !== otp) return res.status(400).send({ error: "In Valid OTP, please send a valid OTP!", status: 400 })
 
     if (resultUser && resultUser[0]) {
       // Create token
