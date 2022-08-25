@@ -82,7 +82,7 @@ export const register_by_vendor = async (req, res, next) => {
       }
     }
 
-    if (oldUser.length) return res.status(400).send({ message: "User Already Exist. Please Login", status: 400 })
+    if (oldUser.length) return res.status(400).send({ error: "User Already Exist. Please Login", status: 400 })
 
     const encryptedPassword = await bcryptjs.hash(password, 10);
 
