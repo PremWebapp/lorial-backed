@@ -1,18 +1,20 @@
-// const fast2sms = require('fast-two-sms')
 import unirest from 'unirest'
 import { validationResult } from 'express-validator'
-import connection from '../../utils/db_connection.js'
+import vendor_db_connection from '../../utils/vendor_db_connection.js'
 import util from 'util'
 
 
 export const sendOTPmessage = async (req, res, next) => {
     try {
         const { mobile } = req.body;
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
 
         const oldUser = await query(`SELECT * FROM registervendor WHERE mobile=${mobile}`);
         var ifExistUser = Object.values(JSON.parse(JSON.stringify(oldUser)))
-        if (ifExistUser?.length === 0 && ifExistUser[0]?.mobile !== mobile) return res.status(400).send({ error: "User not found, please register!", status: 400 });
+
+        if (ifExistUser?.length === 0 || ifExistUser[0]?.mobile !== mobile) return res.status(400).send({ error: "Invalid mobile number !", status: 400 });
+
+        if (ifExistUser?.length === 0 || ifExistUser[0]?.isPermitted === 0) return res.status(400).send({ error: "Can't able to login, pending from admin side!", status: 400 });
 
         const error = validationResult(req)
         if (!error.isEmpty()) return res.status(400).send({ error });

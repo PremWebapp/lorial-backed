@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
 import { validationResult } from 'express-validator'
-import connection from '../../utils/db_connection.js'
+import vendor_db_connection from '../../utils/vendor_db_connection.js'
 import util from 'util'
 
 //loging controller
@@ -9,7 +9,7 @@ export const login_by_vendor = async (req, res, next) => {
   try {
     const error = validationResult(req)
     if (!error.isEmpty()) return res.status(400).send({ error });
-    const query = util.promisify(connection.query).bind(connection);
+    const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
 
     const { otp } = req.body;
 
@@ -29,7 +29,7 @@ export const login_by_vendor = async (req, res, next) => {
       // Create token
       const token = jwt.sign(
         { user_id: resultUser[0]?.id, 'mobile': resultUser[0]?.mobile },
-        process.env.TOKEN_KEY,
+        process.env.VENDOR_TOKEN_KEY,
       )
       await query(`UPDATE vendorotp SET active=${true} WHERE mobile=${resultUser[0]?.mobile}`);
       resultUser.active = true
@@ -50,11 +50,10 @@ export const register_by_vendor = async (req, res, next) => {
     const error = validationResult(req)
     if (!error.isEmpty()) return res.status(400).send({ error });
 
-    const query = util.promisify(connection.query).bind(connection);
+    const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
 
     // Validate user input
-    const { bank_details, pickup_location } = req.body;
-    const { first_name, last_name, email, password, mobile } = req.body;
+    const { first_name, last_name, email, password, mobile,  bank_details, pickup_location } = req.body;
     if (!(email && password && first_name && last_name && mobile)) return res.status(400).send({ error: "All input is required for registertion" })
 
     // checking of vendor bank details
@@ -107,7 +106,7 @@ export const logout_by_vendor = async (req, res, next) => {
   try {
     const { mobile } = req.body;
     if (!(mobile)) res.status(400).send({ message: "Mobile number is required for logout!", status: 400 });
-    const query = util.promisify(connection.query).bind(connection);
+    const query = util.promisify(vendor_db_connection.query).bind(connection);
     await query(`DELETE from vendorotp WHERE mobile=${mobile}`);
     await query(`UPDATE vendorotp SET active=${false} WHERE mobile='${mobile}'`);
     res.status(200).send({ message: "Vendor logout successfully", status: 200 });

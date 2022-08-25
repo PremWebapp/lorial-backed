@@ -3,10 +3,11 @@ import 'dotenv/config'
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from "body-parser"
-import './utils/db_connection.js'
-import vendorRoute from "./vendor/middleware/vendorGlobalRoute.js";
+import './utils/vendor_db_connection.js'
 import path from 'path'
 import { fileURLToPath } from 'url';
+import vendorGlobalRoute from "./vendor/route/vendorGlobalRoute.js";
+import adminGlobalRoute from "./admin/route/adminGlobalRoute.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -35,10 +36,10 @@ app.use((req, res, next) => {
 });
 
 //  route for vendor
-app.use('/', vendorRoute)
+app.use('/vendor', vendorGlobalRoute)
 
-
-// for AWS account routes
+// for admin
+app.use('/admin', adminGlobalRoute)
 
 
 // api end point handeling

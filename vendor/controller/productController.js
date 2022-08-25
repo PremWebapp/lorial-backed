@@ -1,5 +1,5 @@
 import util from 'util'
-import connection from '../../utils/db_connection.js'
+import vendor_db_connection from '../../utils/vendor_db_connection.js'
 import { awsRemove } from '../middleware/aws-remove.js'
 
 export const add_product = async (req, res, next) => {
@@ -11,7 +11,7 @@ export const add_product = async (req, res, next) => {
             res.status(400).send({ status: 400, error: "All input is required" })
         }
 
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
 
         const ifExist = await query(`SELECT * FROM vendor_product WHERE vendor_id='${vendor_id}' AND title='${title}'`)
 
@@ -38,7 +38,7 @@ export const add_product = async (req, res, next) => {
 export const get_product = async (req, res, next) => {
     try {
         const { vendor_id } = req.query
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
         const ifExist = await query(`SELECT * FROM vendor_product vp  JOIN vendor_category vc ON (vp.vendor_id='${vendor_id}' AND vc.vendor_id='${vendor_id}' AND vp.category_id = vc.id )`)
         var resultCategory = Object.values(JSON.parse(JSON.stringify(ifExist)))
 
@@ -53,7 +53,7 @@ export const remove_product = async (req, res, next) => {
     try {
         const { product_id } = req.query
 
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
 
         await query(`DELETE FROM vendor_product_img WHERE product_id=${product_id}`)
         await query(`DELETE FROM vendor_product WHERE product_id=${product_id}`)
@@ -69,14 +69,14 @@ export const get_byid_product = async (req, res, next) => {
     try {
         const { product_id } = req.query
 
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
 
         const ifImgExist = await query(`SELECT * FROM  vendor_product_img WHERE product_id='${product_id}'`)
         const ifPrtoductExist = await query(`SELECT * FROM vendor_product WHERE product_id='${product_id}'`)
 
         var resultImg = Object.values(JSON.parse(JSON.stringify(ifImgExist)))
         var resultPrtoduct = Object.values(JSON.parse(JSON.stringify(ifPrtoductExist)))
-       resultPrtoduct[0].imgPath = resultImg
+        resultPrtoduct[0].imgPath = resultImg
         return res.status(200).send({ status: 200, message: "Data deleted successfully", data: resultPrtoduct[0] });
     }
     catch (error) {

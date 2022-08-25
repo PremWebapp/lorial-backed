@@ -1,5 +1,5 @@
 import util from 'util'
-import connection from '../../utils/db_connection.js'
+import vendor_db_connection from '../../utils/vendor_db_connection.js'
 
 export const category_vendor = async (req, res, next) => {
     try {
@@ -7,7 +7,7 @@ export const category_vendor = async (req, res, next) => {
 
         if (!(vendor_id && category_name)) return res.status(400).send({ error: "All input is required", status: 400 })
 
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
         const ifVendorExist = await query(`SELECT * FROM registervendor WHERE vendor_id='${vendor_id}'`)
 
         var resultVendor = Object.values(JSON.parse(JSON.stringify(ifVendorExist)))
@@ -32,7 +32,7 @@ export const category_vendor_by_id = async (req, res, next) => {
     try {
         const { vendor_id } = req.query
         if (!(vendor_id)) return res.status(400).send({ error: "All input is required", status: 400 })
-        const query = util.promisify(connection.query).bind(connection);
+        const query = util.promisify(vendor_db_connection.query).bind(vendor_db_connection);
         const ifVendorExist = await query(`SELECT * FROM vendor_category WHERE vendor_id=${vendor_id}`)
         var resultVendor = Object.values(JSON.parse(JSON.stringify(ifVendorExist)))
         return res.status(200).send({ message: "Data fetched.. successfully", status: 200, data: resultVendor });

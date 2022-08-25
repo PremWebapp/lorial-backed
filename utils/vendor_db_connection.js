@@ -1,15 +1,15 @@
 import mysql from "mysql";
 
-var connection = mysql.createConnection({
+var vendor_db_connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: 'lorial-vendor'
 });
 
-connection.connect(function(err) {
+vendor_db_connection.connect(function(err) {
   if (err) throw err;
   else console.log("Database connected successfully!...........................................");
 }); 
 
-export default connection
+export default vendor_db_connection
